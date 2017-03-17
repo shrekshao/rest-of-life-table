@@ -21,7 +21,14 @@ var RLT = RLT || {};
 
         $('#datetimepicker').datepicker({
             minViewMode: 'months',
-            format: 'yyyy/mm'
+            format: 'yyyy/mm',
+            autoclose: true,
+            startView: 'decade'
+        });
+
+        $('#clearBtn').click(function(){
+            console.log('clear local storage');
+            localStorage.clear();
         });
 
 
