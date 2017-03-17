@@ -86,20 +86,50 @@ var RLT = RLT || {};
         // TODO: build abstract
 
         // build tables
+
         var table = $('#lifeTable');
-        var tbody = table.find('tbody');
+        // var tbody = table.find('tbody');
+        var tbody = $('#future');
+        var pastSection = $('#past');
         var yearOfBirth = RLT.info.dateOfBirth.year;
         var yearOfDeath = yearOfBirth + RLT.info.lifeSpan;
+
+        var date = new Date();
+        var yearNow = parseInt(date.getFullYear());
         // var row;
         var year, age;
 
-        // var rowTemplate = ;
+
+
+
+        if ( yearOfBirth < yearNow) {
+            $('#topRows').append(`
+            <tr class="accordion-toggle" data-toggle="collapse" data-target="#past" aria-expanded="true">
+            <td>
+              ${yearOfBirth} - ${yearNow - 1}
+            </td>
+            </tr>
+            `);
+        }
 
         for (year = yearOfBirth, age = 0; year <= yearOfDeath; year++, age++) {
             // row = RLT.rowTemplateStr
 
-            // tbody.append( RLT.rowTemplateStr );
-            tbody.append( `<tr id="${year}"><td>${year}(${age})</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>` );
+
+            if (year < yearNow) {
+                // collapse
+                // tbody.append( 
+                pastSection.append( 
+                `<tr id="${year}" >
+                <td>${year}(${age})
+                </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>` );
+            } else {
+                tbody.append( `<tr id="${year}">
+                <td>${year}(${age})
+                </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>` );
+            }
         }
 
     }
