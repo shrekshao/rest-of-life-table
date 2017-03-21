@@ -110,12 +110,12 @@ var RLT = RLT || {};
 
 
         if ( yearOfBirth < yearNow) {
+
+
             $('#topRows').append(`
-            <tr class="accordion-toggle" data-toggle="collapse" data-target="#past" aria-expanded="true">
-            <td>
+            <div class="card-header accordion-toggle" data-toggle="collapse" data-target="#past" aria-expanded="true">
               ${yearOfBirth} - ${yearNow - 1}
-            </td>
-            </tr>
+            </div>
             `);
         }
 
@@ -125,17 +125,55 @@ var RLT = RLT || {};
 
             if (year < yearNow) {
                 // collapse
-                // tbody.append( 
+
+                // pastSection.append( 
+                // `<tr id="${year}" >
+                // <td>${year}(${age})
+                // </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                // </tr>` );
+
                 pastSection.append( 
-                `<tr id="${year}" >
-                <td>${year}(${age})
-                </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                </tr>` );
+                `<div class='row' id="${year}" >
+                <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
+                <div class="col-xs-9 col-sm-10 col-md-11" id='headMonth'>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                </div>
+                </div>` );
             } else {
-                tbody.append( `<tr id="${year}">
-                <td>${year}(${age})
-                </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                </tr>` );
+                // tbody.append( `<tr id="${year}">
+                // <td>${year}(${age})
+                // </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                // </tr>` );
+
+                tbody.append( 
+                `<div class='row' id="${year}" >
+                <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
+                <div class="col-xs-9 col-sm-10 col-md-11" id='headMonth'>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                </div>
+                </div>` );
             }
         }
 
