@@ -6,13 +6,21 @@ var RLT = RLT || {};
 
     // RLT.rowTemplateStr = `<tr id="${year}"><td>${year}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
 
+    var testTasksInfo = {
+        '2020-3': [
+            {
+                name: 'fuck a girl',
+                des: 'I cannot accept dieing without ever having sex ... -_-'
+            }
+        ]
+    };
+
+
     RLT.info = {
         // username: '',
         // dateOfBirth: ''
         lifeSpan: 70,
-        tasks: {
-            '2020/03': 'fuck a girl'
-        }
+        tasks: {}
     };
 
 
@@ -43,6 +51,10 @@ var RLT = RLT || {};
             });
         } else {
             RLT.info = JSON.parse(localStorageInfo);
+
+            // TODO: delete testing purpose
+            RLT.info.tasks = testTasksInfo;
+
             initTablePage();
         }
 
@@ -87,6 +99,53 @@ var RLT = RLT || {};
 
 
 
+    window.onClickMonthCell = function ( id ) {
+        console.log( id );
+
+
+        $('#task-title-id').text( id );
+
+        $('#task-modal').modal();
+    };
+
+
+
+
+    /**
+     * 
+     * 
+     * @param {String} id '2017-03'
+     * @param {Boolean} past if is past month
+     * 
+     * @returns {String} html of the grid cell
+     */
+    function getMonthGridCell( id, past ) {
+        var classStr = "col-xs-3 col-sm-2 col-md-1";
+        var labelStr = '-';
+
+        if (past) {
+            classStr += " past";
+        }
+
+
+        var taskArray = RLT.info.tasks[id];
+
+        if (taskArray) {
+            classStr += " has-task";
+            if ( Array.isArray( taskArray ) ) {
+                labelStr = `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}`;
+            }
+        }
+
+
+        return `<div class='${classStr}' id=${id} onclick="onClickMonthCell('${id}')">${labelStr}</div>`
+    }
+
+
+
+
+
+
     function initTablePage() {
         $('#username').text( RLT.info.username );
 
@@ -103,7 +162,7 @@ var RLT = RLT || {};
 
         var date = new Date();
         var yearNow = parseInt(date.getFullYear());
-        var monthNow = parseInt(date.getMonth());
+        var monthNow = parseInt(date.getMonth()) + 1;
         // var row;
         var year, age;
 
@@ -136,38 +195,32 @@ var RLT = RLT || {};
                 pastSection.append( 
                 `<div class='row' id="${year}" >
                 <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
-                <div class="col-xs-9 col-sm-10 col-md-11">
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                <div class="col-xs-9 col-sm-10 col-md-11" id="${year}-row">
                 </div>
                 </div>` );
+
+                var curYearRow = $(`#${year}-row`);
+
+                for (var m = 1; m <= 12; m++) {
+                    curYearRow.append( getMonthGridCell( `${year}-${m}`, true ) );
+                }
             } else if (year === yearNow) {
                 tbody.append(
                 `<div class='row' id="${year}" >
                     <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
-                    <div class="col-xs-9 col-sm-10 col-md-11" id='curYearRow' >
+                    <div class="col-xs-9 col-sm-10 col-md-11" id="${year}-row">
                     </div>
                     </div>
                 `);
 
-                var curYearRow = $('#curYearRow');
+                var curYearRow = $(`#${year}-row`);
 
-                for (var m = 0; m < monthNow; m++) {
-                    curYearRow.append("<div class='past col-xs-3 col-sm-2 col-md-1'>-</div>");
+                for (var m = 1; m < monthNow; m++) {
+                    curYearRow.append( getMonthGridCell( `${year}-${m}`, true ) );
                 }
 
-                for (m = monthNow; m < 12; m++) {
-                    curYearRow.append("<div class='col-xs-3 col-sm-2 col-md-1'>-</div>");
+                for (m = monthNow; m <= 12; m++) {
+                    curYearRow.append( getMonthGridCell( `${year}-${m}`, false ) );
                 }
             } else {
                 // tbody.append( `<tr id="${year}">
@@ -175,24 +228,19 @@ var RLT = RLT || {};
                 // </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                 // </tr>` );
 
-                tbody.append( 
+                tbody.append(
                 `<div class='row' id="${year}" >
-                <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
-                <div class="col-xs-9 col-sm-10 col-md-11" >
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                </div>
-                </div>` );
+                    <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
+                    <div class="col-xs-9 col-sm-10 col-md-11" id="${year}-row">
+                    </div>
+                    </div>
+                `);
+
+                var curYearRow = $(`#${year}-row`);
+
+                for (var m = 1; m <= 12; m++) {
+                    curYearRow.append( getMonthGridCell( `${year}-${m}`, false ) );
+                }
             }
         }
 

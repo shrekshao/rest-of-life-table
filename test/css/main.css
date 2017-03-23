@@ -1,3 +1,11 @@
 .past {
     background-color: #eeeeee;
 }
+
+.col-md-1:hover {
+    background-color: #ff9999;
+}
+
+.has-task {
+    background-color: #99ff99;
+}
