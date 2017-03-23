@@ -103,6 +103,7 @@ var RLT = RLT || {};
 
         var date = new Date();
         var yearNow = parseInt(date.getFullYear());
+        var monthNow = parseInt(date.getMonth());
         // var row;
         var year, age;
 
@@ -114,7 +115,7 @@ var RLT = RLT || {};
 
             $('#topRows').append(`
             <div class="card-header accordion-toggle" data-toggle="collapse" data-target="#past" aria-expanded="true">
-              ${yearOfBirth} - ${yearNow - 1}
+              <a href='#'>${yearOfBirth} - ${yearNow - 1}</a>
             </div>
             `);
         }
@@ -135,21 +136,39 @@ var RLT = RLT || {};
                 pastSection.append( 
                 `<div class='row' id="${year}" >
                 <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
-                <div class="col-xs-9 col-sm-10 col-md-11" id='headMonth'>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
-                    <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
+                <div class="col-xs-9 col-sm-10 col-md-11">
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
+                    <div class='past col-xs-3 col-sm-2 col-md-1'>-</div>
                 </div>
                 </div>` );
+            } else if (year === yearNow) {
+                tbody.append(
+                `<div class='row' id="${year}" >
+                    <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
+                    <div class="col-xs-9 col-sm-10 col-md-11" id='curYearRow' >
+                    </div>
+                    </div>
+                `);
+
+                var curYearRow = $('#curYearRow');
+
+                for (var m = 0; m < monthNow; m++) {
+                    curYearRow.append("<div class='past col-xs-3 col-sm-2 col-md-1'>-</div>");
+                }
+
+                for (m = monthNow; m < 12; m++) {
+                    curYearRow.append("<div class='col-xs-3 col-sm-2 col-md-1'>-</div>");
+                }
             } else {
                 // tbody.append( `<tr id="${year}">
                 // <td>${year}(${age})
@@ -159,7 +178,7 @@ var RLT = RLT || {};
                 tbody.append( 
                 `<div class='row' id="${year}" >
                 <div class='col-xs-3 col-sm-2 col-md-1'>${year}(${age})</div>
-                <div class="col-xs-9 col-sm-10 col-md-11" id='headMonth'>
+                <div class="col-xs-9 col-sm-10 col-md-11" >
                     <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
                     <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
                     <div class='col-xs-3 col-sm-2 col-md-1'>-</div>
