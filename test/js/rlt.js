@@ -99,11 +99,31 @@ var RLT = RLT || {};
 
 
 
+
     window.onClickMonthCell = function ( id ) {
         console.log( id );
 
 
         $('#task-title-id').text( id );
+
+        
+        var taskArray = RLT.info.tasks[id];
+        var taskSelect = $('#task-select');
+
+        if (taskArray) {
+            
+            if ( Array.isArray( taskArray ) ) {
+                var optionStr = '';
+                for (var i = 0, len = taskArray.length; i < len; i++) {
+                    optionStr += `<option>${taskArray[i].name}</option>`;
+                }
+                taskSelect.html(optionStr);
+            }
+        } else {
+            taskSelect.html('<option> New Task...</option>');
+        }
+        
+        
 
         $('#task-modal').modal();
     };
