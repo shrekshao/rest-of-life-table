@@ -62,10 +62,21 @@ var RLT = RLT || {};
             if (this.selectedIndex == this.length - 1) {
                 // New Task
                 clearInputTaskModal();
+                
             } else {
                 selectTaskOption( RLT.info.tasks[curTaskModalTimeKey][this.selectedIndex] );
             }
             
+        });
+
+        $('#task-remove').click(function() {
+            var taskArray = RLT.info.tasks[curTaskModalTimeKey];
+
+            // taskArray must be an array (or the remove button is disabled)
+            taskArray.splice(curTaskModalSelectId, 1);
+
+            updateMonthGridCell( curTaskModalTimeKey, taskArray );
+            storeInfo();
         });
 
         $('#task-submit').click(function() {
@@ -181,11 +192,13 @@ var RLT = RLT || {};
     function clearInputTaskModal() {
         $('#task-name-input').val('');
         $('#task-description-input').val('');
+        $('#task-remove').prop('disabled', true);
     }
 
     function selectTaskOption( task ) {
         $('#task-name-input').val( task.name );
         $('#task-description-input').val( task.description );
+        $('#task-remove').prop('disabled', false);
     }
 
 
@@ -247,18 +260,21 @@ var RLT = RLT || {};
         var cell = $('#' + id);
 
         if ( taskArray && Array.isArray( taskArray ) ) {
-            cell.html( `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}` );
             if ( taskArray.length > 0 ) {
+                cell.html( `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}` );
                 if (!cell.hasClass('has-task')) {
                     cell.addClass('has-task');
                 }
-            }
-        } else {
-            cell.html('-');
-            if (cell.hasClass('has-task')) {
-                cell.removeClass('has-task');
+                return;
             }
         }
+        
+
+        cell.html('-');
+        if (cell.hasClass('has-task')) {
+            cell.removeClass('has-task');
+        }
+        
 
         
     }
@@ -284,10 +300,14 @@ var RLT = RLT || {};
         var taskArray = RLT.info.tasks[id];
 
         if (taskArray) {
-            classStr += " has-task";
+            
             if ( Array.isArray( taskArray ) ) {
-                labelStr = `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}`;
-                // labelStr = getMonthGridCellLabelStr( taskArray );
+                if (taskArray.length > 0) {
+                    classStr += " has-task";
+                    labelStr = `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}`;
+                    // labelStr = getMonthGridCellLabelStr( taskArray );
+                }
+                
             }
         }
 
