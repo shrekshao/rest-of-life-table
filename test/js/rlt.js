@@ -27,7 +27,8 @@ var RLT = RLT || {};
         ]
     };
 
-    var curModalTimeKey;
+    var curTaskModalTimeKey, curTaskModalSelectId;
+    var yearNow, monthNow;
 
     RLT.info = {
         // username: '',
@@ -56,14 +57,63 @@ var RLT = RLT || {};
             // console.log(this.value);
             // console.log(this.selectedIndex);
 
+            curTaskModalSelectId = this.selectedIndex;
+
             if (this.selectedIndex == this.length - 1) {
                 // New Task
                 clearInputTaskModal();
             } else {
-                selectTaskOption( RLT.info.tasks[curModalTimeKey][this.selectedIndex] );
+                selectTaskOption( RLT.info.tasks[curTaskModalTimeKey][this.selectedIndex] );
+            }
+            
+        });
+
+        $('#task-submit').click(function() {
+            var task = null;
+
+
+            var taskArray = RLT.info.tasks[curTaskModalTimeKey];
+
+
+
+            if (taskArray) {
+                if (curTaskModalSelectId < taskArray.length) {
+                    // modify cur task
+                    task = taskArray[curTaskModalSelectId];
+                }
+            } else {
+                // must be adding new task
+                taskArray = RLT.info.tasks[curTaskModalTimeKey] = [];
             }
 
             
+            if ( task === null ) {
+                // new task
+                
+                // if ( !taskArray ) {
+                //     taskArray = RLT.info.tasks[curTaskModalTimeKey] = [];
+                // }
+
+                task = {};
+                taskArray.push(task);
+            }
+
+            task.name = $('#task-name-input').val();
+            task.description = $('#task-description-input').val();
+
+            
+
+
+            // update cell
+            // $('#' + curTaskModalTimeKey).html(getMonthGridCellLabelStr( taskArray ));
+            updateMonthGridCell( curTaskModalTimeKey, taskArray );
+
+
+            // update storage
+            storeInfo();
+
+            
+
         });
 
 
@@ -79,8 +129,8 @@ var RLT = RLT || {};
         } else {
             RLT.info = JSON.parse(localStorageInfo);
 
-            // TODO: delete testing purpose
-            RLT.info.tasks = testTasksInfo;
+            // // TODO: delete testing purpose
+            // RLT.info.tasks = testTasksInfo;
 
             initTablePage();
         }
@@ -104,7 +154,7 @@ var RLT = RLT || {};
 
     function modalFirstTimeSubmit(event) {
         event.preventDefault();
-        console.log(event);
+        // console.log(event);
         
         RLT.info.username = $('#usernameInput').val();
         var dateOfBirthStr = $('#dateOfBirthInput').val();
@@ -159,10 +209,14 @@ var RLT = RLT || {};
 
                 optionStr += '<option disabled="disabled">─────</option><option> New Task...</option>';
                 taskSelect.html(optionStr);
+
+                curTaskModalSelectId = 0;
             }
         } else {
             clearInputTaskModal();
             taskSelect.html('<option disabled="disabled">─────</option><option> New Task...</option>');
+
+            curTaskModalSelectId = 1;
         }
     }
 
@@ -170,9 +224,9 @@ var RLT = RLT || {};
 
 
     window.onClickMonthCell = function ( id ) {
-        console.log( id );
+        // console.log( id );
 
-        curModalTimeKey = id;
+        curTaskModalTimeKey = id;
 
         $('#task-title-id').text( id );
 
@@ -187,6 +241,27 @@ var RLT = RLT || {};
     };
 
 
+
+
+    function updateMonthGridCell( id, taskArray ) {
+        var cell = $('#' + id);
+
+        if ( taskArray && Array.isArray( taskArray ) ) {
+            cell.html( `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}` );
+            if ( taskArray.length > 0 ) {
+                if (!cell.hasClass('has-task')) {
+                    cell.addClass('has-task');
+                }
+            }
+        } else {
+            cell.html('-');
+            if (cell.hasClass('has-task')) {
+                cell.removeClass('has-task');
+            }
+        }
+
+        
+    }
 
 
     /**
@@ -212,6 +287,7 @@ var RLT = RLT || {};
             classStr += " has-task";
             if ( Array.isArray( taskArray ) ) {
                 labelStr = `<span class="glyphicon glyphicon-asterisk"></span> ${taskArray.length}`;
+                // labelStr = getMonthGridCellLabelStr( taskArray );
             }
         }
 
@@ -239,8 +315,8 @@ var RLT = RLT || {};
         var yearOfDeath = yearOfBirth + RLT.info.lifeSpan;
 
         var date = new Date();
-        var yearNow = parseInt(date.getFullYear());
-        var monthNow = parseInt(date.getMonth()) + 1;
+        yearNow = parseInt(date.getFullYear());
+        monthNow = parseInt(date.getMonth()) + 1;
         // var row;
         var year, age;
 
