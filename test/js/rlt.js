@@ -7,14 +7,27 @@ var RLT = RLT || {};
     // RLT.rowTemplateStr = `<tr id="${year}"><td>${year}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
 
     var testTasksInfo = {
+        '2017-5': [
+            {
+                name: 'publish vrmb on itch.io',
+                description: 'att'
+            }
+        ]
+        ,
         '2020-3': [
             {
                 name: 'fuck a girl',
-                des: 'I cannot accept dieing without ever having sex ... -_-'
+                description: 'I cannot accept dieing without ever having sex ... -_-'
+            }
+            ,
+            {
+                name: 'whatever',
+                description: 'Test\n\nPlay Project little man?'
             }
         ]
     };
 
+    var curModalTimeKey;
 
     RLT.info = {
         // username: '',
@@ -34,9 +47,23 @@ var RLT = RLT || {};
             startView: 'decade'
         });
 
-        $('#clearBtn').click(function(){
+        $('#clearBtn').click(function() {
             console.log('clear local storage');
             localStorage.clear();
+        });
+
+        $('#task-select').change(function() {
+            // console.log(this.value);
+            // console.log(this.selectedIndex);
+
+            if (this.selectedIndex == this.length - 1) {
+                // New Task
+                clearInputTaskModal();
+            } else {
+                selectTaskOption( RLT.info.tasks[curModalTimeKey][this.selectedIndex] );
+            }
+
+            
         });
 
 
@@ -100,14 +127,20 @@ var RLT = RLT || {};
 
 
 
-    window.onClickMonthCell = function ( id ) {
-        console.log( id );
+
+    function clearInputTaskModal() {
+        $('#task-name-input').val('');
+        $('#task-description-input').val('');
+    }
+
+    function selectTaskOption( task ) {
+        $('#task-name-input').val( task.name );
+        $('#task-description-input').val( task.description );
+    }
 
 
-        $('#task-title-id').text( id );
 
-        
-        var taskArray = RLT.info.tasks[id];
+    function updateTaskModal( taskArray ) {
         var taskSelect = $('#task-select');
 
         if (taskArray) {
@@ -117,12 +150,37 @@ var RLT = RLT || {};
                 for (var i = 0, len = taskArray.length; i < len; i++) {
                     optionStr += `<option>${taskArray[i].name}</option>`;
                 }
+
+                if (len > 0) {
+                    selectTaskOption( taskArray[0] );
+                } else {
+                    clearInputTaskModal();
+                }
+
+                optionStr += '<option disabled="disabled">─────</option><option> New Task...</option>';
                 taskSelect.html(optionStr);
             }
         } else {
-            taskSelect.html('<option> New Task...</option>');
+            clearInputTaskModal();
+            taskSelect.html('<option disabled="disabled">─────</option><option> New Task...</option>');
         }
+    }
+
+
+
+
+    window.onClickMonthCell = function ( id ) {
+        console.log( id );
+
+        curModalTimeKey = id;
+
+        $('#task-title-id').text( id );
+
         
+        // var taskArray = RLT.info.tasks[id];
+        
+        
+        updateTaskModal( RLT.info.tasks[id] );
         
 
         $('#task-modal').modal();
@@ -140,7 +198,7 @@ var RLT = RLT || {};
      * @returns {String} html of the grid cell
      */
     function getMonthGridCell( id, past ) {
-        var classStr = "col-xs-3 col-sm-2 col-md-1";
+        var classStr = "col-xs-3 col-sm-2 col-md-1 monthCell";
         var labelStr = '-';
 
         if (past) {
