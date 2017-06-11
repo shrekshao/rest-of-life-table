@@ -7,7 +7,7 @@ var RLT = RLT || {};
     // RLT.rowTemplateStr = `<tr id="${year}"><td>${year}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
 
     var testTasksInfo = {
-        '2017-5': [
+        '2017-6': [
             {
                 name: 'publish vrmb on itch.io',
                 description: 'att'
@@ -36,6 +36,8 @@ var RLT = RLT || {};
         lifeSpan: 70,
         tasks: {}
     };
+
+    const abstractTaskNum = 3;
 
 
     window.onload = function() {
@@ -170,7 +172,7 @@ var RLT = RLT || {};
         RLT.info.username = $('#usernameInput').val();
         var dateOfBirthStr = $('#dateOfBirthInput').val();
 
-        var parts = dateOfBirthStr.split('/')
+        var parts = dateOfBirthStr.split('/');
 
         RLT.info.dateOfBirth = {
             year: parseInt(parts[0]),
@@ -257,6 +259,8 @@ var RLT = RLT || {};
 
 
     function updateMonthGridCell( id, taskArray ) {
+        buildAbstract();
+
         var cell = $('#' + id);
 
         if ( taskArray && Array.isArray( taskArray ) ) {
@@ -274,8 +278,6 @@ var RLT = RLT || {};
         if (cell.hasClass('has-task')) {
             cell.removeClass('has-task');
         }
-        
-
         
     }
 
@@ -315,15 +317,57 @@ var RLT = RLT || {};
         return `<div class='${classStr}' id=${id} onclick="onClickMonthCell('${id}')">${labelStr}</div>`
     }
 
+    
 
+    function buildAbstract() {
+        var todoList = $('#todo-list');
+        todoList.empty();
 
+        var keys = Object.keys(RLT.info.tasks);
+        var i, j, len = keys.length;
+        var c = 0;
+        var timekey, taskArray, task;
+
+        if (len > 0) {
+            keys.sort();
+
+            for(i = 0; i < len; i++) {
+                timekey = keys[i];
+                taskArray = RLT.info.tasks[timekey];
+
+                if (taskArray) {
+
+                    for (j = 0; j < taskArray.length; j++) {
+                        task = taskArray[j];
+                        todoList.append(`<li>${timekey} : ${task.name}</li>`);
+
+                        c++;
+
+                        if (c >= abstractTaskNum) {
+                            break;
+                        }
+                    }
+
+                    if (c >= abstractTaskNum) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (c === 0) {
+            todoList.html('<li>No Task in the rest of your life ...</li>');
+        }
+
+    }
 
 
 
     function initTablePage() {
         $('#username').text( RLT.info.username );
 
-        // TODO: build abstract
+        // build abstract
+        buildAbstract();
 
         // build tables
 
